@@ -4,7 +4,7 @@ from .models import ShoppingCart
 from .serializer import ShoppingCartSerializers
 
 
-class ShoppingCartViewSet(viewsets.ModelViewSet):
+class ShoppingCartViewSet(viewsets.ReadOnlyModelViewSet):
     """ GET Recipe list or one ShoppingCart"""
     queryset = ShoppingCart.objects.all()
     serializer_class = ShoppingCartSerializers

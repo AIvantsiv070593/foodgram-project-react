@@ -1,11 +1,12 @@
 import io
 from django.db.models import Sum
-from django.http import FileResponse, HttpResponse
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
@@ -25,9 +26,11 @@ from .serializer import (
 
 
 class StandardResultsSetPagination(PageNumberPagination):
+    """Pagination for recipe"""
     page_size = 6
     page_size_query_param = 'page_size'
     max_page_size = 6
+
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     """ GET Tags list or one Tag"""
@@ -49,6 +52,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, ]
     filterset_class = RecipeFilter
     pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -60,6 +64,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['GET', 'DELETE'])
     def shopping_cart(self, request, pk=None):
+        """ADD, DELETE recipe from shoping_cart"""
         recipe = get_object_or_404(Recipe, pk=pk)
         username = self.request.user.username
         if request.method == 'DELETE':
@@ -79,6 +84,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['GET', 'DELETE'])
     def favorite(self, request, pk=None):
+        """ADD, DELETE recipe from favorite"""
         recipe = get_object_or_404(Recipe, pk=pk)
         username = self.request.user.username
         if request.method == 'DELETE':
@@ -99,6 +105,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def download_shopping_cart(request):
+    """Download shopping list"""
     data = IngredientInRicepe.objects.filter(
          recipe__shoppingcart_recipe__user=request.user).values(
              'ingredients__name', 'ingredients__measurement_unit').annotate(
@@ -116,7 +123,9 @@ def download_shopping_cart(request):
     textobject.setFont('Verdana', 15)
 
     for items in data:
-        row = ('{} {} {}'.format(items['ingredients__name'], items['amount'], items['ingredients__measurement_unit']))
+        row = ('• {} ({}) -{}'.format(items['ingredients__name'],
+                                      items['ingredients__measurement_unit'],
+                                      items['amount'],))
         textobject.textLine(row)
 
     p.drawText(textobject)

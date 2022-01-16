@@ -32,5 +32,4 @@ class IngredientsFilter(filters.FilterSet):
 
     class Meta:
         model = Ingredients
-        # fields = {'name': ['icontains'], }
         fields = ['name']

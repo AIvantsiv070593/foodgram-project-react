@@ -4,6 +4,7 @@ from users.models import CustomUser
 
 
 class ShoppingCart(models.Model):
+    """ShoppingCart model for recipe"""
     name = models.CharField('Список покупок',
                             unique=True,
                             max_length=200,
@@ -33,6 +34,7 @@ class ShoppingCart(models.Model):
 
 
 class Favorite(models.Model):
+    """Favorite model for recipe"""
     name = models.CharField('Избранное',
                             unique=True,
                             max_length=200,

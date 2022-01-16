@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-# from users.models import CustomUser
-from users.serializer import CustomUserSerializers
+
 from foodgram.serializer import RecipeSerializers
 
 from .models import ShoppingCart

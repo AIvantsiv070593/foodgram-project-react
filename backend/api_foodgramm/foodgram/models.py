@@ -1,9 +1,9 @@
-# from django.contrib import admin
 from django.db import models
 from users.models import CustomUser
 
 
 class IngredientInRicepe(models.Model):
+    """Ingredient in Recipe models"""
     recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE,
                                related_name='ingredients_related_recipe')
     ingredients = models.ForeignKey('Ingredients', on_delete=models.CASCADE,
@@ -28,11 +28,13 @@ class IngredientInRicepe(models.Model):
 
 
 class Ingredients(models.Model):
+    """Ingredient model"""
     name = models.CharField('Название Ингредиента',
                             max_length=200,
-                            default='')
+                            null=False)
     measurement_unit = models.CharField('Еденицы измерения',
-                                        max_length=20)
+                                        max_length=20,
+                                        null=False)
 
     class Meta:
         ordering = ['name']
@@ -44,16 +46,20 @@ class Ingredients(models.Model):
 
 
 class Tags(models.Model):
+    """Tags model"""
     name = models.CharField('Название Тэга',
                             unique=True,
                             max_length=200,
-                            default='')
+                            default='',
+                            null=False)
     slug = models.SlugField('uniqueSlug',
                             unique=True,
-                            default='')
+                            default='',
+                            null=False)
     color = models.CharField('Цвет',
+                             unique=True,
                              max_length=200,
-                             default='#000000')
+                             null=False)
 
     class Meta:
         ordering = ['name']
@@ -63,23 +69,17 @@ class Tags(models.Model):
     def __str__(self):
         return self.name
 
-    # @admin.display()
-    # def color_name(self):
-    #     return format_html(
-    #         '<span style="color: #{};"></span>',
-    #         self.color,
-    #     )
-
 
 class Recipe(models.Model):
+    """Recipe model"""
     name = models.CharField('Название Рецепта',
                             unique=False,
-                            max_length=200, default='')
+                            max_length=200,
+                            null=False)
     image = models.ImageField('Фото',
                               upload_to='static/images/',
-                              blank=True,
-                              null=True,
-                              help_text='Добавте картинку')
+                              help_text='Добавте картинку',
+                              null=False)
     text = models.CharField('Описание',
                             default='',
                             max_length=200,
@@ -89,11 +89,11 @@ class Recipe(models.Model):
                                on_delete=models.CASCADE,
                                null=False)
     tags = models.ManyToManyField(Tags, verbose_name=('Тэги'),
-                                  blank=True,
+                                  blank=False,
                                   related_name='recipe_teg')
     ingredients = models.ManyToManyField('Ingredients',
                                          verbose_name=('Ингридиенты'),
-                                         blank=True,
+                                         blank=False,
                                          related_name='recipe',
                                          through=IngredientInRicepe)
     cooking_time = models.PositiveSmallIntegerField('Время приготовления',

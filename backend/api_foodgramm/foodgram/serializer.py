@@ -78,7 +78,7 @@ class RecipeViewSerializers(serializers.ModelSerializer):
         try:
             return Favorite.objects.filter(user=self.context['request'].user,
                                            recipe=obj).exists()
-        except:
+        except TypeError:
             return False
 
     def shopping_cart(self, obj):
@@ -86,7 +86,7 @@ class RecipeViewSerializers(serializers.ModelSerializer):
             return ShoppingCart.objects.filter(
                 user=self.context['request'].user,
                 recipe=obj).exists()
-        except:
+        except TypeError:
             return False
 
 
@@ -108,8 +108,9 @@ class RecipeSerializers(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField('shopping_cart')
 
     class Meta:
-        fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
-                  'is_in_shopping_cart', 'image', 'name', 'text', 'cooking_time')
+        fields = ('id', 'tags', 'author', 'ingredients',
+                  'is_favorited', 'is_in_shopping_cart',
+                  'image', 'name', 'text', 'cooking_time')
         read_only_fields = ('id', 'author')
         model = Recipe
 
@@ -143,7 +144,7 @@ class RecipeSerializers(serializers.ModelSerializer):
         try:
             return Favorite.objects.filter(user=self.context['request'].user,
                                            recipe=obj).exists()
-        except:
+        except TypeError:
             return False
 
     def shopping_cart(self, obj):
@@ -151,11 +152,12 @@ class RecipeSerializers(serializers.ModelSerializer):
             return ShoppingCart.objects.filter(
                 user=self.context['request'].user,
                 recipe=obj).exists()
-        except:
+        except TypeError:
             return False
 
 
 class ActionSerializers(serializers.ModelSerializer):
+    """Serializer for action Favorit and ShoppingCart"""
 
     class Meta:
         fields = ('id', 'name', 'image', 'cooking_time')

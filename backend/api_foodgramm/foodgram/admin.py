@@ -33,7 +33,6 @@ class RecipeAdmin(admin.ModelAdmin):
 class TagsAdmin(admin.ModelAdmin):
     list_display = (
         'name',
-        # "color",
         'slug',
     )
     empty_value_display = '-пусто-'
