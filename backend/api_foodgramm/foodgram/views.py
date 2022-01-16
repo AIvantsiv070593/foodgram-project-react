@@ -1,11 +1,15 @@
-import csv
+import io
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import FileResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 from action.models import Favorite, ShoppingCart
 
@@ -19,6 +23,11 @@ from .serializer import (
     ActionSerializers
 )
 
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 6
+    page_size_query_param = 'page_size'
+    max_page_size = 6
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     """ GET Tags list or one Tag"""
@@ -39,6 +48,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     filter_backends = [DjangoFilterBackend, ]
     filterset_class = RecipeFilter
+    pagination_class = StandardResultsSetPagination
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -90,13 +100,27 @@ class RecipeViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 def download_shopping_cart(request):
     data = IngredientInRicepe.objects.filter(
-        recipe__shoppingcart_recipe__user=request.user).values(
-            'ingredients__name', 'ingredients__measurement_unit').annotate(
-                amount=Sum('amount'))
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="СписокПокупок"'
-    writer = csv.writer(response)
+         recipe__shoppingcart_recipe__user=request.user).values(
+             'ingredients__name', 'ingredients__measurement_unit').annotate(
+                 amount=Sum('amount'))
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer)
+    pdfmetrics.registerFont(TTFont('Verdana', 'verdana.ttf'))
+    textobject = p.beginText()
+    textobject.setTextOrigin(50, 790)
+
+    textobject.setFont('Verdana', 30)
+    textobject.textLine('Список Покупок')
+
+    textobject.setTextOrigin(50, 700)
+    textobject.setFont('Verdana', 15)
 
     for items in data:
-        writer.writerow(items.value())
-    return response
+        row = ('{} {} {}'.format(items['ingredients__name'], items['amount'], items['ingredients__measurement_unit']))
+        textobject.textLine(row)
+
+    p.drawText(textobject)
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='ShopList.pdf')

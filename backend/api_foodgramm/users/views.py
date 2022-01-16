@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from .models import CustomUser, Follow
@@ -33,8 +34,15 @@ def subscribe(request, id):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 6
+    page_size_query_param = 'page_size'
+    max_page_size = 6
+
+
 class FollowViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = FollowUserSerializers
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         """Filter queryset by following user."""

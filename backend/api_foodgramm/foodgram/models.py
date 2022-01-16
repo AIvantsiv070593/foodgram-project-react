@@ -76,7 +76,7 @@ class Recipe(models.Model):
                             unique=False,
                             max_length=200, default='')
     image = models.ImageField('Фото',
-                              upload_to='foodgram/',
+                              upload_to='static/images/',
                               blank=True,
                               null=True,
                               help_text='Добавте картинку')

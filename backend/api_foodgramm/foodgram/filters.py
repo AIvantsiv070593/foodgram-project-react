@@ -5,7 +5,7 @@ from .models import Ingredients, Recipe
 
 class RecipeFilter(filters.FilterSet):
     """Filter Recipe by Tags, Author, Favorite"""
-    tags = filters.CharFilter(field_name='tags__slug')
+    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = filters.BooleanFilter(method='favorited')
     is_in_shopping_cart = filters.BooleanFilter(method='shopping_cart')
 

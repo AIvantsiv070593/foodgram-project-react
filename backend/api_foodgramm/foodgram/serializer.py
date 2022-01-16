@@ -61,8 +61,8 @@ class RecipeViewSerializers(serializers.ModelSerializer):
     """Serializer to work on the Recipe model to view in shoppingcart."""
     ingredients = IngredientInRicepeViewSerializers(
         many=True, source='ingredients_related_recipe')
-    tags = TagsSerializers(many=True)
-    image = Base64ImageField()
+    tags = TagsSerializers(many=True, read_only=True)
+    image = Base64ImageField(use_url=True)
     author = CustomUserSerializers()
     cooking_time = serializers.IntegerField(min_value=1)
     is_favorited = serializers.SerializerMethodField('favorite')
@@ -97,7 +97,7 @@ class RecipeSerializers(serializers.ModelSerializer):
         source='ingredients_related_recipe')
     tags = serializers.PrimaryKeyRelatedField(many=True,
                                               queryset=Tags.objects.all())
-    # image = Base64ImageField()
+    image = Base64ImageField()
     name = serializers.CharField(
         max_length=200,
         validators=[UniqueValidator(queryset=Recipe.objects.all())])
@@ -109,7 +109,7 @@ class RecipeSerializers(serializers.ModelSerializer):
 
     class Meta:
         fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
-                  'is_in_shopping_cart', 'name', 'text', 'cooking_time')
+                  'is_in_shopping_cart', 'image', 'name', 'text', 'cooking_time')
         read_only_fields = ('id', 'author')
         model = Recipe
 
@@ -128,7 +128,7 @@ class RecipeSerializers(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         tags = validated_data.pop('tags')
         ingredients_data = validated_data.pop('ingredients_related_recipe')
-        # instance.image = validated_data.get('image', instance.image)
+        instance.image = validated_data.get('image', instance.image)
         IngredientInRicepe.objects.filter(recipe=instance).delete()
         instance.tags.set(tags)
         instance.save()
