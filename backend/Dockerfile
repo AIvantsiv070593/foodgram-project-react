@@ -1,16 +1,15 @@
 
 FROM python:3.7-slim
 
-RUN mkdir /app
+WORKDIR /app
 
-COPY requirements.txt /app
+COPY requirements.txt /
 
-RUN pip3 install -r /app/requirements.txt --no-cache-dir
+RUN pip3 install -r requirements.txt --no-cache-dir
 
-COPY api_foodgramm/ /app
+COPY api_foodgramm/ /
 
 COPY fonts/ /usr/share/fonts
 
-WORKDIR /app
 
 CMD ["gunicorn", "api_foodgramm.wsgi:application", "--bind", "0:8000" ]
