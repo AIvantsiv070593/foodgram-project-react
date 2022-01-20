@@ -1,28 +1,20 @@
-import io
 from django.db.models import Sum
-from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 
 from action.models import Favorite, ShoppingCart
 
 from .filters import IngredientsFilter, RecipeFilter
-from .models import Ingredients, Recipe, Tags, IngredientInRicepe
-from .serializer import (
-    IngredientsSerializers,
-    RecipeSerializers,
-    RecipeViewSerializers,
-    TagsSerializers,
-    ActionSerializers
-)
+from .models import IngredientInRicepe, Ingredients, Recipe, Tags
+from .serializer import (ActionSerializers, IngredientsSerializers,
+                         RecipeSerializers, RecipeViewSerializers,
+                         TagsSerializers)
+from .utils import get_pdf_file
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -33,13 +25,13 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
-    """ GET Tags list or one Tag"""
+    """ A ViewSet for Tags model"""
     queryset = Tags.objects.all()
     serializer_class = TagsSerializers
 
 
 class IngredientsViwset(viewsets.ReadOnlyModelViewSet):
-    """ GET Ingredients list or one Ingredient"""
+    """A ViewSet for Ingredients model"""
     queryset = Ingredients.objects.all()
     serializer_class = IngredientsSerializers
     filter_backends = [DjangoFilterBackend, ]
@@ -47,7 +39,7 @@ class IngredientsViwset(viewsets.ReadOnlyModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    """ GET List Recipe. GET, POST, PUT, DEL Recipe"""
+    """A ViewSet for Recipe model"""
     queryset = Recipe.objects.all()
     filter_backends = [DjangoFilterBackend, ]
     filterset_class = RecipeFilter
@@ -110,26 +102,4 @@ def download_shopping_cart(request):
          recipe__shoppingcart_recipe__user=request.user).values(
              'ingredients__name', 'ingredients__measurement_unit').annotate(
                  amount=Sum('amount'))
-    buffer = io.BytesIO()
-    p = canvas.Canvas(buffer)
-    pdfmetrics.registerFont(TTFont('Verdana', 'verdana.ttf'))
-    textobject = p.beginText()
-    textobject.setTextOrigin(50, 790)
-
-    textobject.setFont('Verdana', 30)
-    textobject.textLine('Список Покупок')
-
-    textobject.setTextOrigin(50, 700)
-    textobject.setFont('Verdana', 15)
-
-    for items in data:
-        row = ('• {} ({}) -{}'.format(items['ingredients__name'],
-                                      items['ingredients__measurement_unit'],
-                                      items['amount'],))
-        textobject.textLine(row)
-
-    p.drawText(textobject)
-    p.showPage()
-    p.save()
-    buffer.seek(0)
-    return FileResponse(buffer, as_attachment=True, filename='ShopList.pdf')
+    return get_pdf_file(data)

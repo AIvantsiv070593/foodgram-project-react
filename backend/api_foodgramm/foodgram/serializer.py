@@ -9,7 +9,7 @@ from .models import IngredientInRicepe, Ingredients, Recipe, Tags
 
 
 class TagsSerializers(serializers.ModelSerializer):
-    """Serializer to work on the Tags model."""
+    """Serialization of Tags model."""
 
     class Meta:
         fields = ('id', 'name', 'color', 'slug')
@@ -17,7 +17,7 @@ class TagsSerializers(serializers.ModelSerializer):
 
 
 class IngredientInRicepeSerializers(serializers.ModelSerializer):
-    """Serializer to work on the IngredientInRicepe model."""
+    """Serialization of IngredientInRicepe model."""
     id = serializers.PrimaryKeyRelatedField(
         source='ingredients',
         queryset=Ingredients.objects.all()
@@ -31,7 +31,7 @@ class IngredientInRicepeSerializers(serializers.ModelSerializer):
 
 
 class IngredientsSerializers(serializers.ModelSerializer):
-    """Serializer to work on the Ingredients model."""
+    """Serialization of Ingredients model."""
 
     class Meta:
         fields = ('id', 'name', 'measurement_unit')
@@ -58,7 +58,7 @@ class IngredientInRicepeViewSerializers(serializers.ModelSerializer):
 
 
 class RecipeViewSerializers(serializers.ModelSerializer):
-    """Serializer to work on the Recipe model to view in shoppingcart."""
+    """Serialization of Recipe model to view in shoppingcart."""
     ingredients = IngredientInRicepeViewSerializers(
         many=True, source='ingredients_related_recipe')
     tags = TagsSerializers(many=True, read_only=True)
@@ -91,7 +91,7 @@ class RecipeViewSerializers(serializers.ModelSerializer):
 
 
 class RecipeSerializers(serializers.ModelSerializer):
-    """Serializer to work on the Recipe model."""
+    """Serialization of Recipe model."""
     ingredients = IngredientInRicepeSerializers(
         many=True,
         source='ingredients_related_recipe')
@@ -157,7 +157,7 @@ class RecipeSerializers(serializers.ModelSerializer):
 
 
 class ActionSerializers(serializers.ModelSerializer):
-    """Serializer for action Favorit and ShoppingCart"""
+    """Serialization of Favorit and ShoppingCart"""
 
     class Meta:
         fields = ('id', 'name', 'image', 'cooking_time')

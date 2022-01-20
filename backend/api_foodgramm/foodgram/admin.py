@@ -1,5 +1,10 @@
+from api_foodgramm import settings
+from django import forms
 from django.contrib import admin
+
 from action.models import Favorite
+from foodgram.form import TagsForm
+
 from .models import IngredientInRicepe, Ingredients, Recipe, Tags
 
 
@@ -10,7 +15,7 @@ class IngredientsAdmin(admin.ModelAdmin):
         'measurement_unit'
     )
     list_filter = ('name',)
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.empty_value
 
 
 @admin.register(Recipe)
@@ -22,7 +27,7 @@ class RecipeAdmin(admin.ModelAdmin):
     )
     filter_horizontal = ('tags', 'ingredients')
     list_filter = ('author', 'name', 'tags')
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.empty_value
 
     def favorite_count(self, obj):
         return Favorite.objects.filter(recipe=obj).count()
@@ -35,7 +40,13 @@ class TagsAdmin(admin.ModelAdmin):
         'name',
         'slug',
     )
-    empty_value_display = '-пусто-'
+    form = TagsForm
+    fieldsets = (
+        (None, {
+            'fields': (('name', 'slug'), 'color')
+            }),
+        )
+    empty_value_display = settings.empty_value
 
 
 @admin.register(IngredientInRicepe)
@@ -45,4 +56,4 @@ class IngredientInRicepeAdmin(admin.ModelAdmin):
         'ingredients',
         'amount',
     )
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.empty_value

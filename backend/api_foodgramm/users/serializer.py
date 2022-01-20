@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from foodgram.models import Recipe
+
 from .models import CustomUser, Follow
 
 
@@ -22,9 +24,10 @@ class CustomUserSerializers(serializers.ModelSerializer):
 
     def subscribe(self, obj):
         try:
-            return Follow.objects.filter(user=self.context['request'].user,
-                                         following=obj).exists()
-        except:
+            return Follow.objects.filter(
+                user=self.context['request'].user,
+                following=obj).exists()
+        except TypeError:
             return False
 
 
@@ -44,8 +47,8 @@ class FollowUserSerializers(serializers.ModelSerializer):
 
     def subscribe(self, obj):
         try:
-            return Follow.objects.filter(user=self.context['request'].user,
-                                         following=obj).exists()
-        except:
+            return Follow.objects.filter(
+                user=self.context['request'].user,
+                following=obj).exists()
+        except TypeError:
             return False
-        # Правильно ли указана подписчик и юзер

@@ -1,4 +1,6 @@
+from api_foodgramm import settings
 from django.contrib import admin
+
 from .models import Favorite, ShoppingCart
 
 
@@ -9,7 +11,7 @@ class ShoppimgCartAdmin(admin.ModelAdmin):
     )
     list_filter = ('name',)
     filter_horizontal = ('recipe',)
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.empty_value
 
 
 @admin.register(Favorite)
@@ -18,4 +20,4 @@ class FavoriteAdmin(admin.ModelAdmin):
         'name',
     )
     filter_horizontal = ('recipe',)
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.empty_value

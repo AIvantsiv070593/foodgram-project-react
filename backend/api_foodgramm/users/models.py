@@ -11,13 +11,12 @@ class CustomUser(AbstractUser):
     first_name = models.CharField('first_name', max_length=150)
     last_name = models.CharField('last-name', max_length=150)
     is_active = models.BooleanField(default=True)
-    # is_subscribed = models.BooleanField(default=False)
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     USERNAME_FIELD = 'email'
     objects = CustomUserManager()
 
     class Meta:
-        ordering = ['username']
+        ordering = ('username', )
         verbose_name = 'Пользовтаель'
         verbose_name_plural = 'Пользователи'
 
@@ -27,23 +26,23 @@ class CustomUser(AbstractUser):
 
 class Follow(models.Model):
     """Follow on users."""
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
-                             related_name='following')
-    following = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
-                                  related_name='followers')
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='following')
+
+    following = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='followers')
+        
     created = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
-        ordering = ['created']
+        ordering = ('created', )
         verbose_name = 'Подписчик'
         verbose_name_plural = 'Подписчики'
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'following'],
-                                    name="unique_followers")
-        ]
-
-        ordering = ["-created"]
-
-    # def __str__(self):
-    #     return f'Подписок {self.user.count()},'
-    #     f'Подписавшихся {self.following.count()}'
+        constraints = (
+            models.UniqueConstraint(fields=('user', 'following'),
+                                    name='unique_followers'),
+        )

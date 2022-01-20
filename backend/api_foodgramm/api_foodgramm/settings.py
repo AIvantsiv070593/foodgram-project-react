@@ -3,11 +3,13 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-SECRET_KEY = 'aietgu52e@kb7)9v_kba8+!b+l6ya^8t$)7pdc3+l7o@1=d)-^'
+empty_value = '-пусто-'
+
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', '51.250.27.225', 'backend']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS')
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -25,7 +27,7 @@ INSTALLED_APPS = [
     'djoser',
     'users',
     'foodgram',
-    'action'
+    'action',
 ]
 
 MIDDLEWARE = [
