@@ -133,4 +133,4 @@ dmypy.json
 .idea
 
 .vscode/
-static/images/
+backend/api_foodgramm/static/images/
