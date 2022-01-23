@@ -17,3 +17,6 @@ http://51.250.27.225/api/docs/
 http://51.250.27.225/admin/ 
 http://51.250.27.225/ 
 
+Тестовый администратор:
+Login admin@mail.ru
+password admin
