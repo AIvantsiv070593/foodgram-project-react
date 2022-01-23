@@ -12,4 +12,8 @@ docker-compose exec backend python manage.py createsuperuser # Создать а
 docker-compose exec backend python manage.py load_data --file ingredients.csv # Наполняем БД начальными данными, файл положить в data.
 
 
-Проверить работу: http://51.250.27.225/admin/ http://51.250.27.225/ http://51.250.27.225/redoc/
+Проверить работу: 
+http://51.250.27.225/api/docs/
+http://51.250.27.225/admin/ 
+http://51.250.27.225/ 
+
