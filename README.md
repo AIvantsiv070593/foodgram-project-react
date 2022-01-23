@@ -4,11 +4,11 @@ foodgram-project-react - API для проекта Foodgramm. Проект гд�
 
 Загрузить и запустить на сервере контейнер Docker docker pull aivanstiv070593/.....
 
-На сервере выполнить из под root:
-docker-compose up -d # Запускаем приложение
-docker-compose exec backend python manage.py migrate # Применяем миграции
-docker-compose exec backend python manage.py collectstatic --no-input # Собираем статику
-docker-compose exec backend python manage.py createsuperuser # Создать администратора
+На сервере выполнить из под root:  
+docker-compose up -d # Запускаем приложение  
+docker-compose exec backend python manage.py migrate # Применяем миграции  
+docker-compose exec backend python manage.py collectstatic --no-input # Собираем статику  
+docker-compose exec backend python manage.py createsuperuser # Создать администратора  
 docker-compose exec backend python manage.py load_data --file ingredients.csv # Наполняем БД начальными данными, файл положить в data.
 
 
