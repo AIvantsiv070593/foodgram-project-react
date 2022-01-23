@@ -11,6 +11,7 @@ RUN pip3 install -r /requirements.txt --no-cache-dir
 COPY api_foodgramm/ /
 
 COPY fonts/ /usr/share/fonts
+COPY data/ /data
 
 WORKDIR /
 
