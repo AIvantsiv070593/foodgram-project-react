@@ -1,8 +1,8 @@
-from api_foodgramm import settings
 from django import forms
 from django.contrib import admin
 
 from action.models import Favorite
+from api_foodgramm import settings
 from foodgram.form import TagsForm
 
 from .models import IngredientInRicepe, Ingredients, Recipe, Tags

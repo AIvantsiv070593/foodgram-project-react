@@ -1,5 +1,6 @@
-from api_foodgramm import settings
 from django.contrib import admin
+
+from api_foodgramm import settings
 
 from .models import Favorite, ShoppingCart
 

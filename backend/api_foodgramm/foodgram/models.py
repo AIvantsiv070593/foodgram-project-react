@@ -20,7 +20,7 @@ class IngredientInRicepe(models.Model):
         'Колличество',
         null=False,
         name='amount',
-        validators=[MinValueValidator(0.1), ])
+        validators=[MinValueValidator(0.1, message='Должно быть > 0'), ])
 
     class Meta:
         verbose_name = 'Ингредиент в рецепте'
@@ -128,7 +128,7 @@ class Recipe(models.Model):
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
         null=False,
-        validators=[MinValueValidator(1), ])
+        validators=[MinValueValidator(1, message='Должно быть > 0'), ])
 
     pub_date = models.DateTimeField(
         'Дата создания',
