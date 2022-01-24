@@ -6,7 +6,9 @@ foodgram-project-react - API для проекта Foodgramm.
   
 Развернуть проект:
 
-Загрузить и запустить на сервере контейнер Docker docker pull aivanstiv070593/.....
+Загрузить и запустить на сервере контейнер Docker  
+docker pull aivanstiv070593/foodgramm:infra_frontend  
+docker pull aivanstiv070593/foodgramm:infra_backend
 
 На сервере выполнить из под root:  
 docker-compose up -d # Запускаем приложение  
