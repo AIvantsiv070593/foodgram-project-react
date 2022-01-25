@@ -25,6 +25,9 @@ class IngredientInRicepe(models.Model):
     class Meta:
         verbose_name = 'Ингредиент в рецепте'
         verbose_name_plural = 'Ингредиенты в рецептах'
+        constraints=[models.UniqueConstraint(
+            fields=['recipe', 'ingredients'],
+            name='unique ingredients')]
 
     def save(self, *args, **kwargs):
         self.amount = round(self.amount, 2)

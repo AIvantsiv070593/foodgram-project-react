@@ -114,6 +114,17 @@ class RecipeSerializers(serializers.ModelSerializer):
         read_only_fields = ('id', 'author')
         model = Recipe
 
+    def validate(self, data):
+        check_list = []
+        for ingredient in data.get('ingredients_related_recipe'):
+            if ingredient['ingredients'] not in check_list:
+                check_list.append(ingredient['ingredients'])
+            else:
+                raise serializers.ValidationError('Ингредиент уже добавлен')
+            if ingredient['amount'] <= 0:
+                raise serializers.ValidationError('Количество должно быть > 0')
+        return data
+
     def create(self, validated_data):
         tags = validated_data.pop('tags')
         ingredients_data = validated_data.pop('ingredients_related_recipe')
